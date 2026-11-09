@@ -115,6 +115,9 @@ main { padding-block: 28px 64px; }
 .opt:hover .em { transform: rotate(-8deg) scale(1.08); }
 .opt.picked { border-color: var(--c); background: var(--c); color: #fff; transform: scale(1.03); box-shadow: 0 10px 24px rgba(74, 42, 31, .18); }
 .opt.picked .em { transform: scale(1.15) rotate(6deg); }
+.opt { overflow-wrap: anywhere; hyphens: auto; -webkit-hyphens: auto; }
+.qhead h2, .hero-card h2, .pick-body h3, .school-zone h3 { overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+.qnum.school { background: var(--blue); color: #fff; }
 .opt small { display: block; font-weight: 600; font-size: .85rem; opacity: .8; }
 @media (max-width: 720px) { .opt { padding: 16px 8px 14px; font-size: .95rem; } .opt .em { width: 60px; height: 60px; font-size: 2rem; } }
 .opt.age { gap: 2px; padding-block: 22px; }
@@ -176,6 +179,33 @@ main { padding-block: 28px 64px; }
 .pricing .old { text-decoration: line-through; color: var(--muted); font-weight: 700; margin-right: 6px; }
 .pricing .new { font-weight: 900; color: var(--red); }
 
+/* Школа «Сократ» для будущих первоклассников */
+.school-zone { background: var(--c-logic-soft); border-radius: 32px; padding: clamp(20px, 4vw, 36px); display: grid; gap: 20px; position: relative; overflow: hidden; }
+.school-zone::before { content: ""; position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; border-radius: 50%; border: 30px solid rgba(255, 255, 255, .6); }
+.school-zone > * { position: relative; z-index: 1; }
+.school-head { display: grid; gap: 8px; max-width: 40rem; }
+.school-head .kicker { justify-self: start; font-size: .8rem; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; background: var(--blue); color: #fff; border-radius: 999px; padding: 5px 13px; }
+.school-head h3 { font-family: var(--f-display); font-weight: 900; text-transform: uppercase; font-size: clamp(1.4rem, 3.6vw, 2.1rem); line-height: 1.08; }
+.school-head h3 span { color: var(--blue); }
+.school-head p { font-size: 1.05rem; }
+.adv-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .adv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+@media (max-width: 420px) { .adv-grid { grid-template-columns: 1fr; } }
+.adv { background: var(--surface); border-radius: 20px; padding: 16px; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 4px 12px; align-content: start; position: relative; border: 3px solid transparent; }
+.adv .ic { grid-row: span 2; width: 48px; height: 48px; border-radius: 50%; background: var(--c-logic-soft); display: grid; place-items: center; font-size: 1.6rem; }
+.adv b { font-weight: 900; line-height: 1.25; overflow-wrap: break-word; }
+.adv p { font-size: .9rem; color: var(--muted); }
+.adv.mine { border-color: var(--blue); }
+.adv.mine::after { content: attr(data-mine); position: absolute; right: 12px; top: -12px; background: var(--blue); color: #fff; font-size: .74rem; font-weight: 900; border-radius: 999px; padding: 3px 10px; }
+.bridge { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: b; }
+@media (max-width: 760px) { .bridge { grid-template-columns: 1fr; } }
+.bridge div { background: var(--surface); border-radius: 20px; padding: 14px 16px; display: grid; gap: 4px; font-size: .93rem; }
+.bridge div b { font-weight: 900; color: var(--blue); text-transform: uppercase; font-size: .82rem; letter-spacing: .05em; }
+.bridge div:nth-child(1) b { color: var(--orange); } .bridge div:nth-child(3) b { color: var(--green); }
+.school-cta { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: var(--blue); color: #fff; border-radius: 20px; padding: 16px 20px; }
+.school-cta p { font-weight: 700; max-width: 34rem; }
+.school-cta a { color: #fff; font-weight: 900; white-space: nowrap; background: rgba(255, 255, 255, .18); border-radius: 999px; padding: 10px 18px; text-decoration: none; }
+.school-cta a:hover { background: rgba(255, 255, 255, .3); }
 /* Сундук и купон */
 .chest-zone { background: var(--ink); color: var(--bg); border-radius: 32px; padding: clamp(24px, 4vw, 40px); display: grid; gap: 18px; justify-items: center; text-align: center; position: relative; overflow: hidden; }
 .chest-zone h3 { font-family: var(--f-display); font-weight: 900; text-transform: uppercase; font-size: clamp(1.5rem, 4vw, 2.2rem); line-height: 1.1; color: var(--sun); }
@@ -235,6 +265,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: 
 </footer>
 
 <script>
+document.documentElement.lang = "ru"; /* для переносов слов */
 /* ---------- Данные ---------- */
 /* Имя и пол ребёнка — только для текста на экране, никуда не отправляются. */
 function g(m, f) { return S.gender === "f" ? f : m; }
@@ -243,11 +274,11 @@ function L(x) { return typeof x === "function" ? x() : x; }
 /* Интересы ребёнка: шесть «суперсил». Каждый ответ даёт звезду одной или двум. */
 const DIMS = {
   sport: { name: "Движение и спорт",   c: "sport", em: "⚡", hero: () => g("Чемпион", "Чемпионка"), text: () => `Энергии — на троих! ${g("Ему", "Ей")} нужно место, где можно бегать, побеждать и становиться сильнее с каждым занятием.` },
-  art:   { name: "Творчество",         c: "art",   em: "🎨", hero: () => g("Художник-волшебник", "Художница-волшебница"), text: () => `${g("Он", "Она")} видит красоту там, где другие проходят мимо. ${g("Ему", "Ей")} нужны краски, глина и пряжа — и педагог, который поможет довести идею до готовой работы.` },
+  art:   { name: "Творчество",         c: "art",   em: "🎨", hero: () => g("Художник-волшеб­ник", "Худож­ница-волшеб­ница"), text: () => `${g("Он", "Она")} видит красоту там, где другие проходят мимо. ${g("Ему", "Ей")} нужны краски, глина и пряжа — и педагог, который поможет довести идею до готовой работы.` },
   stage: { name: "Сцена и музыка",     c: "stage", em: "🎤", hero: () => "Звезда сцены", text: () => `${g("Он", "Она")} любит, когда на ${g("него", "неё")} смотрят, и умеет зажечь зал. Музыка, песни и роли помогут превратить смелость в настоящий талант.` },
-  logic: { name: "Логика и знания",    c: "logic", em: "🧩", hero: () => g("Мыслитель", "Мыслительница"), text: () => `${g("Он", "Она")} задаёт по сто вопросов в день и не успокоится, пока не найдёт ответ. Головоломки, шахматы и подготовка к школе — ${g("его", "её")} стихия.` },
-  lang:  { name: "Слова и общение",    c: "lang",  em: "🌍", hero: () => g("Путешественник", "Путешественница"), text: () => `${g("Он", "Она")} любит истории, новые слова и новых людей. Английский, сказки и живое общение откроют ${g("ему", "ей")} целый мир.` },
-  build: { name: "Изобретения",        c: "build", em: "🤖", hero: () => g("Изобретатель", "Изобретательница"), text: () => `${g("Он", "Она")} всё разберёт, чтобы понять, как оно устроено, — и соберёт что-то новое. Роботы и конструкторы сделают из любопытства навык.` }
+  logic: { name: "Логика и знания",    c: "logic", em: "🧩", hero: () => g("Мысли­тель", "Мысли­тель­ница"), text: () => `${g("Он", "Она")} задаёт по сто вопросов в день и не успокоится, пока не найдёт ответ. Головоломки, шахматы и подготовка к школе — ${g("его", "её")} стихия.` },
+  lang:  { name: "Слова и общение",    c: "lang",  em: "🌍", hero: () => g("Путе­шест­вен­ник", "Путе­шест­вен­ница"), text: () => `${g("Он", "Она")} любит истории, новые слова и новых людей. Английский, сказки и живое общение откроют ${g("ему", "ей")} целый мир.` },
+  build: { name: "Изобретения",        c: "build", em: "🤖", hero: () => g("Изобре­татель", "Изобре­татель­ница"), text: () => `${g("Он", "Она")} всё разберёт, чтобы понять, как оно устроено, — и соберёт что-то новое. Роботы и конструкторы сделают из любопытства навык.` }
 };
 const HEROES = [
   { em: "🦁", name: "Лев" }, { em: "🦊", name: "Лиса" }, { em: "🐼", name: "Панда" },
@@ -255,31 +286,48 @@ const HEROES = [
 ];
 const AGES = [
   { label: "1–2", unit: "года", v: 1.5, c: "c-red" }, { label: "3", unit: "года", v: 3, c: "c-stage" }, { label: "4", unit: "года", v: 4, c: "c-gold" },
-  { label: "5", unit: "лет", v: 5, c: "c-sport" }, { label: "6", unit: "лет", v: 6, c: "c-logic" }, { label: "7–12", unit: "лет", v: 8, c: "c-lang" }
+  { label: "5", unit: "лет", v: 5, c: "c-sport" }, { label: "6–7", unit: "лет", v: 6.5, c: "c-logic" }, { label: "8–12", unit: "лет", v: 9, c: "c-lang" }
 ];
 const Q = [
-  { title: () => `Чем ${NAME()} занимается, когда дома скучно?`, sub: "Выберите то, что бывает чаще всего",
+  { id: "q1", title: () => `Чем ${NAME()} занимается, когда дома скучно?`, sub: "Выберите то, что бывает чаще всего",
     o: [["🎨", "Рисует и лепит", "art"], ["🤸", "Бегает, прыгает, кувыркается", "sport"], ["🧱", "Строит из конструктора", "build"],
         ["💃", "Поёт и танцует под музыку", "stage"], ["🧩", "Собирает пазлы и разгадывает загадки", "logic"], ["📚", "Слушает сказки и болтает без умолку", "lang"]] },
-  { title: () => `Кем ${NAME()} хочет стать, когда вырастет?`,
-    o: [["🏆", () => g("Чемпионом", "Чемпионкой"), "sport"], ["🖌️", () => g("Художником", "Художницей"), "art"], ["🚀", () => g("Изобретателем роботов", "Изобретательницей роботов"), "build"],
-        ["🌟", () => g("Артистом или певцом", "Артисткой или певицей"), "stage"], ["🔬", "Учёным", "logic"], ["✈️", () => g("Путешественником", "Путешественницей"), "lang"]] },
-  { title: () => `${NAME()}, перед тобой волшебный остров! Куда побежишь ${g("первым", "первой")}?`,
+  { id: "q2", title: () => `Кем ${NAME()} хочет стать, когда вырастет?`,
+    o: [["🏆", () => g("Чемпионом", "Чемпионкой"), "sport"], ["🖌️", () => g("Художником", "Худож­ницей"), "art"], ["🚀", () => g("Изобре­тателем роботов", "Изобре­татель­ницей роботов"), "build"],
+        ["🌟", () => g("Артистом или певцом", "Артисткой или певицей"), "stage"], ["🔬", "Учёным", "logic"], ["✈️", () => g("Путе­шест­вен­ником", "Путе­шест­вен­ницей"), "lang"]] },
+  { id: "q3", title: () => `${NAME()}, перед тобой волшебный остров! Куда побежишь ${g("первым", "первой")}?`,
     o: [["🏔️", "На гору — кто быстрее до вершины", "sport"], ["🌈", "К водопаду из красок", "art"], ["🎪", "На сцену у костра", "stage"],
         ["🗝️", "В пещеру с загадками", "logic"], ["⚙️", "В мастерскую говорящих роботов", "build"], ["⛵", "На корабль в дальние страны", "lang"]] },
-  { title: () => `${NAME()}, выбери себе суперсилу`,
+  { id: "q4", title: () => `${NAME()}, выбери себе суперсилу`,
     o: [["💨", "Бегать быстрее ветра", "sport"], ["✨", "Оживлять рисунки", "art"], ["🎭", "Превращаться в кого угодно", "stage"],
         ["🧠", "Знать ответ на любой вопрос", "logic"], ["🗣️", "Понимать все языки мира", "lang"], ["🔧", "Собирать что угодно из чего угодно", "build"]] },
-  { title: () => `На празднике ${NAME()}…`,
+  { id: "q5", title: () => `На празднике ${NAME()}…`,
     o: [["🕺", () => g("Первым", "Первой") + " выходит танцевать", "stage"], ["🏃", "Зовёт всех в догонялки", "sport"], ["🖍️", "Рисует открытку имениннику", "art"],
         ["♟️", "Садится за настольную игру", "logic"], ["💬", "Знакомится со всеми гостями", "lang"], ["🎁", "Разбирает подарок, чтобы понять, как он устроен", "build"]] },
-  { title: "Какой подарок обрадует больше всего?",
+  { id: "q6", title: "Какой подарок обрадует больше всего?",
     o: [["⚽", "Мяч или спортивный уголок", "sport"], ["🖼️", "Огромный набор для творчества", "art"], ["🤖", "Робот-конструктор", "build"],
         ["🎹", "Микрофон или синтезатор", "stage"], ["♞", "Шахматы или головоломка", "logic"], ["🌍", "Книга про разные страны", "lang"]] },
-  { adult: true, title: "Вопрос для взрослого: что для вас сейчас важнее всего?", sub: "Ответ весит больше остальных — направления подстроятся под вашу цель",
+  { id: "adult", adult: true, title: "Вопрос для взрослого: что для вас сейчас важнее всего?", sub: "Ответ весит больше остальных — направления подстроятся под вашу цель",
     o: [["🎒", "Подготовка к школе", "logic", "school"], ["💪", "Здоровье и энергия", "sport"], ["🙌", "Уверенность и общение", "stage", null, "lang"],
         ["🎨", "Творческое развитие", "art"], ["👄", "Речь и звуки", "lang", "speech"], ["🇬🇧", "Английский язык", "lang", "eng"]] }
 ];
+/* Секретный уровень для 6–7 лет: «школа мечты». Каждый вариант — преимущество школы «Сократ» (sokrat.school, 10.11.2026). */
+const QSCH = { id: "school", school: true, title: () => `${NAME()}, скоро в первый класс! Какой будет твоя школа мечты?`, sub: "Выбери то, что нравится больше всего",
+  colors: ["c-sport", "c-stage", "c-lang", "c-build", "c-red", "c-logic"],
+  o: [["🌳", "Большой двор, где гуляют каждый день", null, "walk"], ["🍲", "Вкусные обеды, фрукты и витаминный чай", null, "food"], ["👫", "Маленький класс, где все дружат", null, "small"],
+      ["🤖", "После уроков — роботы, танцы и шахматы", null, "extra"], ["🎒", "Лёгкий рюкзак: учебники ждут в школе", null, "bag"], ["🎲", "Учиться играя, без скучной зубрёжки", null, "play"]] };
+const ADV = {
+  walk:  { em: "🌳", t: "Ежедневные прогулки", d: "Огороженная территория с зоной отдыха и спортивной площадкой." },
+  food:  { em: "🍲", t: "Качественное питание", d: "Собственная кухня: горячее сбалансированное питание, витаминный чай, фрукты." },
+  small: { em: "👫", t: "Небольшие классы", d: "До 15 детей в классе — педагог успевает заметить каждого." },
+  extra: { em: "🤖", t: "Школа полного дня и 15 направлений", d: "Шахматы, живопись, робототехника, танцы, английский и китайский, дзюдо и другие — на базе нашего клуба." },
+  bag:   { em: "🎒", t: "Без тяжёлых портфелей и вечерней домашки", d: "Учебники хранятся в школе, бо́льшую часть домашнего задания дети делают в школе с педагогом." },
+  play:  { em: "🎲", t: "Учёба с удовольствием", d: "Новое познают через игры и исследования, а занятия с психологом развивают эмоциональный интеллект." }
+};
+const SCHOOL_URL = "https://sokrat.school/";
+const isFirst = () => S.age === 6.5;
+const qs = () => isFirst() ? [...Q.slice(0, -1), QSCH, Q[Q.length - 1]] : Q;
+const total = () => 3 + qs().length; /* имя и пол, возраст, друг-зверёк, вопросы */
 /* Направления — из единого справочника черновика сайта (группы, время, цены по базе знаний). w — насколько направление развивает каждую «суперсилу». */
 const D = [
   { id: "babyfit", name: "Беби-фитнес", r: [1, 3], w: { sport: 3 }, desc: "Физкультура в игре под детскую музыку: здоровье и крупная моторика.", g: "1–3 года", t: ["Пн/Ср 11:00"], p8: 5000 },
@@ -291,7 +339,7 @@ const D = [
   { id: "eng", name: "Английский язык", r: [3, 5], w: { lang: 3 }, desc: "Подвижные игры, песни, карточки, сказки и сценки на английском.", g: "3–5 лет", t: ["Вт/Чт 16:00", "Вт/Чт 17:00"], p8: 5000, eng: 3 },
   { id: "chess", name: "Шахматы", r: [5, 13], w: { logic: 3 }, desc: "Концентрация, логика и умение думать на ходы вперёд — это помогает и в математике.", g: "от 5 лет", t: ["Пн/Ср 17:20", "Пн/Ср 18:00"], p8: 5000, school: 1 },
   { id: "robo", name: "Робототехника", r: [5, 13], w: { build: 3, logic: 1 }, desc: "Собираем роботов из LEGO и программируем их на планшете.", g: "от 5 лет", t: ["Чт 17:00", "Пт 16:20"], p4: 4500 },
-  { id: "ofp", name: "ОФП с нейрофитнесом", r: [3, 7], w: { sport: 3, logic: 1 }, desc: "Физическое развитие вместе с нейроиграми: баланс, координация, внимание.", g: "3–6 лет", t: ["Пн/Ср 17:00"], p8: 5000 },
+  { id: "ofp", name: "ОФП с нейрофитнесом", r: [3, 6.5], w: { sport: 3, logic: 1 }, desc: "Физическое развитие вместе с нейроиграми: баланс, координация, внимание.", g: "3–6 лет", t: ["Пн/Ср 17:00"], p8: 5000 },
   { id: "football", name: "Футбол", r: [3, 12], w: { sport: 3, lang: 1 }, desc: "Владеем телом и мячом, учим правила, растим лидеров.", g: "3–6 и 7–11 лет", t: ["Вт/Пт 16:00", "Вт/Пт 16:45"], p8: 4000 },
   { id: "sambo", name: "Самбо", r: [4, 13], w: { sport: 3 }, desc: "Сила, гибкость и выносливость; броски, удержания и самооборона.", g: "4–6 лет и от 6 лет", t: ["Ср/Пт 16:00", "Пн/Ср/Пт 15:00"], p8: 4000 },
   { id: "izo", name: "Студия ИЗО", r: [3, 13], w: { art: 3 }, desc: "Каждое занятие — мастер-класс: ребёнок уносит домой готовую работу.", g: "от 3 лет", t: ["Пн/Ср 17:00", "Пт 16:10", "Сб 10:00"], p8: 5000 },
@@ -307,16 +355,15 @@ const REACT = ["Ого, вот это выбор!", "Звезда твоя! ⭐"
 /* ---------- Состояние ---------- */
 const app = document.getElementById("app");
 let S = fresh();
-function fresh() { return { step: -1, name: "", gender: null, age: null, hero: null, answers: [], code: null, until: null, opened: false }; }
-function save() { try { localStorage.setItem("sokrat-geroy", JSON.stringify(S)); } catch (e) {} }
-function load() { try { const v = JSON.parse(localStorage.getItem("sokrat-geroy") || "null"); if (v && v.step === 99 && v.gender) S = v; } catch (e) {} }
-const TOTAL = 3 + Q.length; /* имя и пол, возраст, друг-зверёк, вопросы */
+function fresh() { return { step: -1, name: "", gender: null, age: null, hero: null, answers: {}, code: null, until: null, opened: false }; }
+function save() { try { localStorage.setItem("sokrat-geroy-2", JSON.stringify(S)); } catch (e) {} }
+function load() { try { const v = JSON.parse(localStorage.getItem("sokrat-geroy-2") || "null"); if (v && v.step === 99 && v.gender) S = v; } catch (e) {} }
 const QS = 3; /* с какого шага начинаются вопросы */
 
 /* ---------- Подсчёт ---------- */
 function scores() {
   const s = { sport: 0, art: 0, stage: 0, logic: 0, lang: 0, build: 0 }; const flags = {};
-  S.answers.forEach((a, i) => { if (a == null) return; const o = Q[i].o[a]; const k = Q[i].adult ? 2 : 1;
+  qs().forEach(q => { const a = S.answers[q.id]; if (a == null || q.school) return; const o = q.o[a]; const k = q.adult ? 2 : 1;
     s[o[2]] += k; if (o[4]) s[o[4]] += k; if (o[3]) flags[o[3]] = 1; });
   return { s, flags };
 }
@@ -359,7 +406,7 @@ function renderStart() {
     <div>
       <h1><span class="rainbow">${[..."Кем станет"].map(c => c === " " ? " " : `<span>${c}</span>`).join("")}</span><span class="brown">твой герой?</span></h1>
       <p class="lead">Весёлая игра для ребёнка и родителя: выбирайте ответы вместе, собирайте звёзды и узнайте, какие занятия в «Сократе» подходят именно вашему герою.</p>
-      <div class="facts"><span>⭐ ${TOTAL} шагов</span><span>⏱ 3 минуты</span><span>👶 от 1 до 12 лет</span></div>
+      <div class="facts"><span>⏱ 3 минуты</span><span>👶 от 1 до 12 лет</span><span>🎒 сюрприз для будущих первоклассников</span></div>
       <div class="cta"><button class="btn btn-sun" id="go" type="button">Начать игру ▶</button></div>
     </div>
     <div class="stage-art" aria-hidden="true">
@@ -380,7 +427,7 @@ function renderStart() {
   document.getElementById("go").onclick = () => { S = fresh(); S.step = 0; render(); };
 }
 function trail() {
-  const done = S.step; const pct = (i) => (i / (TOTAL - 1)) * 92 + 4;
+  const TOTAL = total(); const done = S.step; const pct = (i) => (i / (TOTAL - 1)) * 92 + 4;
   const stars = Array.from({ length: TOTAL }, (_, i) => `<span class="st ${i < done ? "got" : ""}" style="left:${pct(i)}%">★</span>`).join("");
   const walker = S.hero != null ? HEROES[S.hero].em : "🙂";
   return `<div class="trail">
@@ -390,7 +437,7 @@ function trail() {
   </div>`;
 }
 function renderQuestion() {
-  const st = S.step; let head, opts, extra = "";
+  const st = S.step, TOTAL = total(); let head, opts, extra = "";
   if (st === 0) {
     head = `<span class="qnum">Шаг 1 из ${TOTAL}</span><h2>Давай познакомимся! Как тебя зовут?</h2><p>Имя нужно только для игры и никуда не отправляется</p>`;
     opts = `<button class="opt c-logic ${S.gender === "m" ? "picked" : ""}" data-g="m" type="button"><span class="em">👦</span>Мальчик</button>
@@ -403,12 +450,12 @@ function renderQuestion() {
     head = `<span class="qnum">Шаг 3 из ${TOTAL}</span><h2>${esc(NAME())}, выбери друга, который пойдёт с тобой</h2><p>Он будет шагать по тропинке и подсказывать</p>`;
     opts = HEROES.map((h, i) => `<button class="opt ${["c-stage", "c-red", "c-sport", "c-logic", "c-art", "c-build"][i]} ${S.hero === i ? "picked" : ""}" data-i="${i}" type="button"><span class="em">${h.em}</span>${h.name}</button>`).join("");
   } else {
-    const q = Q[st - QS]; const sel = S.answers[st - QS];
-    head = `<span class="qnum ${q.adult ? "adult" : ""}">${q.adult ? "Для взрослого · " : ""}Шаг ${st + 1} из ${TOTAL}</span><h2>${esc(L(q.title))}</h2>${q.sub ? `<p>${esc(q.sub)}</p>` : (S.age < 3 ? `<p>${g("Малыш", "Малышка")} ещё ${g("маленький", "маленькая")}? Отвечайте за ${g("него", "неё")} — вы знаете ${g("его", "её")} лучше всех</p>` : "")}`;
-    opts = q.o.map((o, i) => `<button class="opt c-${o[2]} ${sel === i ? "picked" : ""}" data-i="${i}" type="button"><span class="em">${o[0]}</span>${esc(L(o[1]))}</button>`).join("");
+    const q = qs()[st - QS]; const sel = S.answers[q.id];
+    head = `<span class="qnum ${q.adult ? "adult" : q.school ? "school" : ""}">${q.school ? "🎒 Секретный уровень" : `${q.adult ? "Для взрослого · " : ""}Шаг ${st + 1} из ${TOTAL}`}</span><h2>${esc(L(q.title))}</h2>${q.sub ? `<p>${esc(q.sub)}</p>` : (S.age < 3 ? `<p>${g("Малыш", "Малышка")} ещё ${g("маленький", "маленькая")}? Отвечайте за ${g("него", "неё")} — вы знаете ${g("его", "её")} лучше всех</p>` : "")}`;
+    opts = q.o.map((o, i) => `<button class="opt ${q.colors ? q.colors[i] : "c-" + o[2]} ${sel === i ? "picked" : ""}" data-i="${i}" type="button"><span class="em">${o[0]}</span>${esc(L(o[1]))}</button>`).join("");
   }
   const face = S.hero != null ? HEROES[S.hero].em : "🌞";
-  const line = st === 0 ? "Привет! Начнём приключение?" : st === 1 ? `Приятно познакомиться, ${esc(NAME())}!` : st === 2 ? "Выбирай, кто тебе нравится больше всех!" : st === TOTAL - 1 ? "Последний шаг — и откроем сундук!" : REACT[(st * 3) % REACT.length];
+  const line = st === 0 ? "Привет! Начнём приключение?" : st === 1 ? `Приятно познакомиться, ${esc(NAME())}!` : st === 2 ? "Выбирай, кто тебе нравится больше всех!" : st === TOTAL - 1 ? "Последний шаг — и откроем сундук!" : qs()[st - QS].school ? "Это секретный уровень для будущих первоклассников!" : REACT[(st * 3) % REACT.length];
   app.innerHTML = `<section class="screen">${trail()}<div class="qcard"><div class="qhead">${head}</div>${extra}<div class="opts ${st === 0 ? "two" : ""}">${opts}</div>
     ${st === 0 ? `<div class="name-next"><button class="btn btn-sun" id="nameNext" type="button">Дальше ▶</button><span class="err" id="nameErr"></span></div>` : ""}
     <div class="speech"><span class="face">${face}</span><span class="bubble">${line}</span></div></div></section>`;
@@ -432,9 +479,9 @@ let busy = false;
 function choose(i, btn) {
   if (busy) return; busy = true;
   app.querySelectorAll(".opt").forEach(b => b.classList.remove("picked")); btn.classList.add("picked");
-  if (S.step === 1) S.age = AGES[i].v; else if (S.step === 2) S.hero = i; else S.answers[S.step - QS] = i;
+  if (S.step === 1) S.age = AGES[i].v; else if (S.step === 2) S.hero = i; else S.answers[qs()[S.step - QS].id] = i;
   flyStar(btn);
-  setTimeout(() => { busy = false; S.step++; if (S.step >= TOTAL) { S.step = 98; } render(); }, 520);
+  setTimeout(() => { busy = false; S.step++; if (S.step >= total()) { S.step = 98; } render(); }, 520);
 }
 function flyStar(from) {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -474,6 +521,7 @@ function renderResult() {
       <div><span class="kicker">${esc(NAME())}, твоя суперсила</span><h2>${L(main.hero)}</h2><p>${L(main.text)} А ещё у ${g("него", "неё")} сильная сторона — <b>${second.name.toLowerCase()}</b>.</p></div>
     </div>
     <div><h3 class="sec-title" style="margin-bottom:12px">Занятия в «Сократе», которые подойдут ${g("ему", "ей")}</h3><div class="picks">${cards}${speech}</div></div>
+    ${isFirst() ? schoolZone() : ""}
     <div class="chest-zone">
       <h3 id="chestTitle">${S.opened ? "Подарок для родителей" : `${esc(NAME())} ${g("нашёл", "нашла")} сундук!`}</h3>
       <p id="chestText">${S.opened ? "Покажите этот код администратору при записи — скидка закреплена за вами." : "Нажмите на сундук, чтобы забрать подарок"}</p>
@@ -492,6 +540,25 @@ function renderResult() {
   document.getElementById("copyPhone").onclick = () => copy("8 (8442) 20-20-23", "Номер скопирован", document.getElementById("phone"));
   document.getElementById("share").onclick = () => copy(location.href.split("#")[0], "Ссылка скопирована — отправьте её друзьям");
   bindCode();
+}
+function schoolZone() {
+  const pick = S.answers.school != null ? QSCH.o[S.answers.school] : null;
+  const keys = ["walk", "food", "small", "extra", "bag", "play"];
+  if (pick) { keys.splice(keys.indexOf(pick[3]), 1); keys.unshift(pick[3]); }
+  const cards = keys.map(k => { const a = ADV[k]; const mine = pick && pick[3] === k;
+    return `<div class="adv ${mine ? "mine" : ""}" ${mine ? `data-mine="Твой выбор"` : ""}><span class="ic">${a.em}</span><b>${a.t}</b><p>${a.d}</p></div>`; }).join("");
+  return `<section class="school-zone">
+    <div class="school-head"><span class="kicker">🎒 Будущим первоклассникам</span>
+      <h3>${esc(NAME())}, школа мечты уже есть — <span>школа «Сократ»</span></h3>
+      <p>${pick ? `Ты ${g("выбрал", "выбрала")} «${esc(pick[1])}». В школе «Сократ» это есть — и ещё много всего.` : "В школе «Сократ» есть всё, что любят дети и ценят родители."}</p></div>
+    <div class="adv-grid">${cards}</div>
+    <div class="bridge">
+      <div><b>Сейчас</b>Раскрываем таланты в клубе «Сократ»: занятия выше подобраны по интересам ${g("сына", "дочки")}</div>
+      <div><b>До 1 сентября</b>Поступление в школу: собеседование с ребёнком и демо-версия одного учебного дня</div>
+      <div><b>В школе</b>Первый класс — а любимые кружки остаются: дополнительные занятия школьников проходят на базе клуба</div>
+    </div>
+    <div class="school-cta"><p>Идёт набор в первый класс на новый учебный год. Запишитесь на экскурсию по школе: 8 (8442) 20-20-23</p><a href="${SCHOOL_URL}" target="_blank" rel="noopener">Сайт школы ↗</a></div>
+  </section>`;
 }
 function chestSvg() {
   return `<svg viewBox="0 0 170 150"><ellipse cx="85" cy="140" rx="70" ry="8" fill="#000" opacity=".25"/>
