@@ -176,6 +176,8 @@ main { padding-block: 28px 64px; }
 .agechip { justify-self: start; font-size: .82rem; font-weight: 800; color: var(--c); background: var(--cs); border-radius: 999px; padding: 3px 11px; }
 .pricing { display: grid; gap: 2px; font-variant-numeric: tabular-nums; border-top: 1.5px dashed var(--line); padding-top: 10px; margin-top: auto; }
 .pricing .free { color: var(--green); font-weight: 900; }
+.result:not(.opened) .pricing { display: none; }
+.result.opened .pricing { animation: pop .5s cubic-bezier(.3, 1.4, .5, 1); }
 
 /* Школа «Сократ» для будущих первоклассников */
 .school-zone { background: var(--c-logic-soft); border-radius: 32px; padding: clamp(20px, 4vw, 36px); display: grid; gap: 20px; position: relative; overflow: hidden; }
@@ -501,19 +503,14 @@ function renderCounting() {
 function renderResult() {
   const R = results(); const main = DIMS[R.order[0]]; const second = DIMS[R.order[1]];
   const hero = HEROES[S.hero ?? 0]; const until = new Date(S.until).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
-  const priceLine = (d) => {
-    const base = d.p8 ? [d.p8, "8 занятий"] : [d.p4, "4 занятия"];
-    return `<div class="free">Пробное — бесплатно</div><div>Абонемент, ${base[1]}: ${rub(base[0])}</div>`;
-  };
   const cards = R.picks.map((p, i) => { const d = p.d; const dim = DIMS[p.top];
     return `<article class="pick c-${dim.c}"><div class="pick-top"><span>${i === 0 ? "Лучшее совпадение" : dim.name}</span><span class="match">${p.match}%</span></div>
       <div class="pick-body"><h3>${esc(d.name)}</h3><p class="why">${dim.em} Развивает: ${dim.name.toLowerCase()}</p><p class="desc">${esc(d.desc)}</p>
       <span class="agechip">${esc(d.g)}</span><div class="slots">${d.t.map(t => `<span class="slot">${esc(t)}</span>`).join("")}</div>
-      <div class="pricing">${priceLine(d)}</div></div></article>`; }).join("");
+      <div class="pricing"><div class="free">🎁 Пробное — бесплатно по вашему коду</div></div></div></article>`; }).join("");
   const speech = R.speech ? `<article class="pick c-lang" style="grid-column:1/-1"><div class="pick-top"><span>Вы отметили «речь и звуки»</span></div>
-      <div class="pick-body"><h3>${SPEECH.name}</h3><p class="desc">${SPEECH.desc}</p><span class="agechip">${SPEECH.g} · ${SPEECH.t[0]}</span>
-      <div class="pricing"><div>Диагностика, 30 минут — ${rub(SPEECH.diag)}</div></div></div></article>` : "";
-  app.innerHTML = `<section class="screen result">
+      <div class="pick-body"><h3>${SPEECH.name}</h3><p class="desc">${SPEECH.desc}</p><span class="agechip">${SPEECH.g} · ${SPEECH.t[0]}</span></div></article>` : "";
+  app.innerHTML = `<section class="screen result ${S.opened ? "opened" : ""}">
     <div class="hero-card c-${main.c}">
       <div class="badge"><span class="ani">${hero.em}</span><span class="pow">${main.em}</span></div>
       <div><span class="kicker">${esc(NAME())}, твоя суперсила</span><h2>${L(main.hero)}</h2><p>${L(main.text)} А ещё у ${g("него", "неё")} сильная сторона — <b>${second.name.toLowerCase()}</b>.</p></div>
@@ -573,7 +570,7 @@ function ticket(until) {
 function bindCode() { const b = document.getElementById("copyCode"); if (b) b.onclick = () => copy(S.code, "Код скопирован", document.getElementById("code")); }
 function openChest(ch, until) {
   ch.classList.add("open"); ch.disabled = true; confetti(2200);
-  setTimeout(() => { S.opened = true; save();
+  setTimeout(() => { S.opened = true; save(); document.querySelector(".result").classList.add("opened");
     document.getElementById("chestTitle").textContent = "Подарок для родителей";
     document.getElementById("chestText").textContent = "Назовите этот код администратору при записи — и пробное занятие будет бесплатным.";
     document.getElementById("chestSlot").innerHTML = ticket(until); bindCode(); }, 650);
