@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Игра-тест детского клуба «Сократ»: узнайте суперсилу ребёнка, подходящие занятия и получите скидку на первый абонемент.">
+<meta name="description" content="Игра-тест детского клуба «Сократ»: узнайте суперсилу ребёнка, подходящие занятия и получите бесплатное пробное занятие.">
 <title>Кем станет герой</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,8 +176,6 @@ main { padding-block: 28px 64px; }
 .agechip { justify-self: start; font-size: .82rem; font-weight: 800; color: var(--c); background: var(--cs); border-radius: 999px; padding: 3px 11px; }
 .pricing { display: grid; gap: 2px; font-variant-numeric: tabular-nums; border-top: 1.5px dashed var(--line); padding-top: 10px; margin-top: auto; }
 .pricing .free { color: var(--green); font-weight: 900; }
-.pricing .old { text-decoration: line-through; color: var(--muted); font-weight: 700; margin-right: 6px; }
-.pricing .new { font-weight: 900; color: var(--red); }
 
 /* Школа «Сократ» для будущих первоклассников */
 .school-zone { background: var(--c-logic-soft); border-radius: 32px; padding: clamp(20px, 4vw, 36px); display: grid; gap: 20px; position: relative; overflow: hidden; }
@@ -348,7 +346,7 @@ const D = [
   { id: "vocal", name: "Эстрадный вокал", r: [6, 10], w: { stage: 3 }, desc: "Дыхание и голос, хор и сольные номера, конкурсы и запись песен.", g: "6–9 лет", t: ["расписание уточняйте"], p4: 4000 }
 ];
 const SPEECH = { id: "logo", name: "Логопед", desc: "Ставит звуки и помогает с речью. Начинаем с диагностики и карты развития речи.", g: "от 3 лет", t: ["по записи"], diag: 1500 };
-const DISCOUNT = 20;      /* согласовать с директором */
+/* Подарок по коду: любое пробное занятие бесплатно (решение руководителя, разговор 12.11). */
 const BOOK_DAYS = 7;      /* за сколько дней записаться на пробное */
 const REACT = ["Ого, вот это выбор!", "Звезда твоя! ⭐", "Так держать!", "Ещё чуть-чуть до сундука!", "Ух ты, интересно!", "Я бы тоже так выбрал!", "Класс! Идём дальше!"];
 
@@ -505,7 +503,7 @@ function renderResult() {
   const hero = HEROES[S.hero ?? 0]; const until = new Date(S.until).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
   const priceLine = (d) => {
     const base = d.p8 ? [d.p8, "8 занятий"] : [d.p4, "4 занятия"];
-    return `<div class="free">Пробное — бесплатно</div><div>Абонемент, ${base[1]}: <span class="old">${rub(base[0])}</span><span class="new">${rub(Math.round(base[0] * (100 - DISCOUNT) / 100))}</span></div>`;
+    return `<div class="free">Пробное — бесплатно</div><div>Абонемент, ${base[1]}: ${rub(base[0])}</div>`;
   };
   const cards = R.picks.map((p, i) => { const d = p.d; const dim = DIMS[p.top];
     return `<article class="pick c-${dim.c}"><div class="pick-top"><span>${i === 0 ? "Лучшее совпадение" : dim.name}</span><span class="match">${p.match}%</span></div>
@@ -524,12 +522,12 @@ function renderResult() {
     ${isFirst() ? schoolZone() : ""}
     <div class="chest-zone">
       <h3 id="chestTitle">${S.opened ? "Подарок для родителей" : `${esc(NAME())} ${g("нашёл", "нашла")} сундук!`}</h3>
-      <p id="chestText">${S.opened ? "Покажите этот код администратору при записи — скидка закреплена за вами." : "Нажмите на сундук, чтобы забрать подарок"}</p>
+      <p id="chestText">${S.opened ? "Назовите этот код администратору при записи — и пробное занятие будет бесплатным." : "Нажмите на сундук, чтобы забрать подарок"}</p>
       <div id="chestSlot">${S.opened ? ticket(until) : `<button class="chest" id="chest" type="button" aria-label="Открыть сундук">${chestSvg()}</button>`}</div>
       <div class="next-steps">
+        <div><b>Выберите направление</b>Любое из подобранных — или другое, которое понравилось</div>
         <div><b>Позвоните или напишите</b>Скажите, что прошли игру, и назовите код</div>
-        <div><b>Приходите на пробное</b>Первое занятие в клубе — бесплатно</div>
-        <div><b>Покупайте со скидкой</b>Минус ${DISCOUNT}% на первый абонемент по коду</div>
+        <div><b>Приходите на пробное</b>Занятие по коду — бесплатно</div>
       </div>
       <div class="contacts"><span class="phone" id="phone">8 (8442) 20-20-23</span><button class="copy-dark" id="copyPhone" type="button">Скопировать номер</button><a href="https://vk.com/sokrat34" target="_blank" rel="noopener">Написать во ВКонтакте</a></div>
     </div>
@@ -568,8 +566,8 @@ function chestSvg() {
     <g class="lid"><path d="M20 66 Q20 22 85 22 Q150 22 150 66 Z" fill="#E07020"/><rect x="34" y="27" width="12" height="39" fill="#FFC928"/><rect x="124" y="27" width="12" height="39" fill="#FFC928"/></g></svg>`;
 }
 function ticket(until) {
-  return `<div class="ticket"><div class="main"><span class="pct">−${DISCOUNT}%</span><span class="what">на первый абонемент в «Сократе»</span>
-    <span class="terms">Запишитесь на бесплатное пробное до ${until} и назовите код администратору.</span></div>
+  return `<div class="ticket"><div class="main"><span class="pct">0 ₽</span><span class="what">любое пробное занятие в «Сократе»</span>
+    <span class="terms">Запишитесь на пробное до ${until} и назовите код администратору.</span></div>
     <div class="stub"><small>Ваш код</small><span class="code" id="code">${S.code}</span><button class="mini" id="copyCode" type="button">Скопировать</button></div></div>`;
 }
 function bindCode() { const b = document.getElementById("copyCode"); if (b) b.onclick = () => copy(S.code, "Код скопирован", document.getElementById("code")); }
@@ -577,7 +575,7 @@ function openChest(ch, until) {
   ch.classList.add("open"); ch.disabled = true; confetti(2200);
   setTimeout(() => { S.opened = true; save();
     document.getElementById("chestTitle").textContent = "Подарок для родителей";
-    document.getElementById("chestText").textContent = "Покажите этот код администратору при записи — скидка закреплена за вами.";
+    document.getElementById("chestText").textContent = "Назовите этот код администратору при записи — и пробное занятие будет бесплатным.";
     document.getElementById("chestSlot").innerHTML = ticket(until); bindCode(); }, 650);
 }
 function copy(text, msg, el) {
