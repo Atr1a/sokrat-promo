@@ -374,9 +374,8 @@ const strip = (title, items, hint) => `<div class="strip"><h3 class="sec-title">
 const lifeZone = () => `<div class="strip"><h3 class="sec-title">Жизнь клуба «Сократ»</h3>
   <figure class="club-video"><video controls playsinline muted preload="none" poster="video/club-poster.jpg" aria-label="Видео о клубе «Сократ»">
     <source src="video/club.mp4" type="video/mp4"></video>
-    <figcaption>🎬 Видео о клубе · 1:25 · звук включается в плеере</figcaption></figure>
-  <div class="strip-row">${LIFE.map(([n, c]) => `<figure class="shot"><img src="${PH(n)}" alt="${esc(c)}" loading="lazy" decoding="async"><figcaption>${esc(c)}</figcaption></figure>`).join("")}</div>
-  <span class="hint">Листайте вбок →</span></div>`;
+    <figcaption>Видео о клубе</figcaption></figure>
+  <div class="strip-row">${LIFE.map(([n, c]) => `<figure class="shot"><img src="${PH(n)}" alt="${esc(c)}" loading="lazy" decoding="async"><figcaption>${esc(c)}</figcaption></figure>`).join("")}</div></div>`;
 const D = [
   { id: "babyfit", name: "Беби-фитнес", r: [1, 3], w: { sport: 3 }, desc: "Физкультура в игре под детскую музыку: здоровье и крупная моторика.", g: "1–3 года", t: ["Пн/Ср 11:00"], p8: 5000 },
   { id: "musmasha", name: "Музыка с Машей", r: [1, 3], w: { stage: 3, lang: 1 }, desc: "Поём, танцуем, играем на инструментах и через музыку узнаём цвета, счёт и буквы.", g: "1–3 года", t: ["Пт 9:30", "Пт 17:00"], p4: 3000 },
@@ -593,7 +592,7 @@ function schoolZone() {
       <h3>${esc(NAME())}, школа мечты уже есть — <span>школа «Сократ»</span></h3>
       <p>${pick ? `Ты ${g("выбрал", "выбрала")} «${esc(pick[1])}». В школе «Сократ» это есть — и ещё много всего.` : "В школе «Сократ» есть всё, что любят дети и ценят родители."}</p></div>
     <div class="adv-grid">${cards}</div>
-    ${strip("Как учатся в «Сократе»", SCHOOL_PH, "Листайте вбок →")}
+    ${strip("Как учатся в «Сократе»", SCHOOL_PH)}
     <div class="bridge">
       <div><b>Сейчас</b>Раскрываем таланты в клубе «Сократ»: занятия выше подобраны по интересам ${g("сына", "дочки")}</div>
       <div><b>До 1 сентября</b>Поступление в школу: собеседование с ребёнком и демо-версия одного учебного дня</div>
