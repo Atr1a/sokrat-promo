@@ -269,6 +269,17 @@ main { padding-block: 28px 64px; }
 .next-steps div::before { counter-increment: s; content: counter(s); width: 30px; height: 30px; border-radius: 50%; background: var(--sun); color: var(--on-sun); display: grid; place-items: center; font-weight: 900; }
 .next-steps b { color: var(--surface); }
 @media (max-width: 700px) { .next-steps { grid-template-columns: 1fr; } }
+.signup { display: grid; gap: 14px; justify-items: center; width: min(560px, 100%); }
+.signup .btn { width: min(360px, 100%); }
+.signup-links { display: grid; gap: 10px; justify-items: center; width: 100%; animation: pop .4s cubic-bezier(.3, 1.4, .5, 1); }
+.signup-links[hidden] { display: none; }
+.signup-links p { font-weight: 700; opacity: .9; }
+.signup-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: 100%; }
+@media (max-width: 420px) { .signup-row { grid-template-columns: 1fr; } }
+.msg-btn { display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 18px; padding: 14px 16px; font-weight: 900; font-size: 1.02rem; color: #fff; text-decoration: none; transition: transform .15s; }
+.msg-btn b { font-size: .78rem; letter-spacing: .04em; background: rgba(255, 255, 255, .25); border-radius: 8px; padding: 4px 7px; }
+.msg-btn.vk { background: #0077FF; } .msg-btn.max { background: linear-gradient(135deg, #4B6BFF, #9B4DFF); }
+@media (hover: hover) and (pointer: fine) { .msg-btn:hover { transform: translateY(-2px); } }
 .contacts { display: flex; flex-wrap: wrap; gap: 10px 14px; justify-content: center; align-items: center; }
 .contacts .phone { font-family: var(--f-display); font-weight: 900; font-size: 1.6rem; font-variant-numeric: tabular-nums; user-select: all; color: var(--surface); }
 .contacts a { color: var(--sun); font-weight: 800; }
@@ -361,6 +372,8 @@ const ADV = {
   play:  { em: "🎲", t: "Учёба с удовольствием", d: "Новое познают через игры и исследования, а занятия с психологом развивают эмоциональный интеллект." }
 };
 const SCHOOL_URL = "https://sokrat.school/";
+const VK_URL = "https://vk.com/sokrat34";
+const MAX_URL = "https://max.ru/u/f9LHodD0cOIAdbYnY6IG1j9ChrsNkZTEauPGVjlRBbt1NateHBBtda3H8iw"; /* «Написать менеджеру в MAX» — из футера черновика сайта */
 const isFirst = () => S.age === 6.5;
 const qs = () => isFirst() ? [...Q.slice(0, -1), QSCH, Q[Q.length - 1]] : Q;
 const total = () => 3 + qs().length; /* имя и пол, возраст, друг-зверёк, вопросы */
@@ -565,17 +578,30 @@ function renderResult() {
       <h3 id="chestTitle">${S.opened ? "Подарок для родителей" : `${esc(NAME())} ${g("нашёл", "нашла")} сундук!`}</h3>
       <p id="chestText">${S.opened ? "Назовите этот код администратору при записи — и пробное занятие будет бесплатным." : "Нажмите на сундук, чтобы забрать подарок"}</p>
       <div id="chestSlot">${S.opened ? ticket(until) : `<button class="chest" id="chest" type="button" aria-label="Открыть сундук">${chestSvg()}</button>`}</div>
+      <div class="signup">
+        <button class="btn btn-sun" id="signupBtn" type="button" aria-expanded="false" aria-controls="signupLinks">Записаться на занятие</button>
+        <div class="signup-links" id="signupLinks" hidden>
+          <p>Напишите нам удобным способом${S.opened ? " и назовите код из сундука" : ""}</p>
+          <div class="signup-row">
+            <a class="msg-btn vk" href="${VK_URL}" target="_blank" rel="noopener"><b>VK</b>ВКонтакте</a>
+            <a class="msg-btn max" href="${MAX_URL}" target="_blank" rel="noopener"><b>MAX</b>Мессенджер MAX</a>
+          </div>
+        </div>
+      </div>
       <div class="next-steps">
         <div><b>Выберите направление</b>Любое из подобранных — или другое, которое понравилось</div>
         <div><b>Позвоните или напишите</b>Скажите, что прошли игру, и назовите код</div>
         <div><b>Приходите на пробное</b>Занятие по коду — бесплатно</div>
       </div>
-      <div class="contacts"><span class="phone" id="phone">8 (8442) 20-20-23</span><button class="copy-dark" id="copyPhone" type="button">Скопировать номер</button><a href="https://vk.com/sokrat34" target="_blank" rel="noopener">Написать во ВКонтакте</a></div>
+      <div class="contacts"><span class="phone" id="phone">8 (8442) 20-20-23</span><button class="copy-dark" id="copyPhone" type="button">Скопировать номер</button></div>
     </div>
     <div class="again"><button class="btn btn-ghost" id="again" type="button">Пройти ещё раз</button><button class="btn btn-ghost" id="share" type="button">Скопировать ссылку на игру</button></div>
   </section>`;
   const ch = document.getElementById("chest"); if (ch) ch.onclick = () => openChest(ch, until);
   document.getElementById("again").onclick = () => { S = fresh(); try { localStorage.removeItem("sokrat-geroy"); } catch (e) {} render(); };
+  const sb = document.getElementById("signupBtn"), sl = document.getElementById("signupLinks");
+  sb.onclick = () => { sl.hidden = !sl.hidden; sb.setAttribute("aria-expanded", String(!sl.hidden));
+    const p = sl.querySelector("p"); p.textContent = "Напишите нам удобным способом" + (S.opened ? " и назовите код из сундука" : ""); };
   document.getElementById("copyPhone").onclick = () => copy("8 (8442) 20-20-23", "Номер скопирован", document.getElementById("phone"));
   document.getElementById("share").onclick = () => copy(location.href.split("#")[0], "Ссылка скопирована — отправьте её друзьям");
   bindCode();
